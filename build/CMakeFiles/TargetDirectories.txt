@@ -1,0 +1,3 @@
+/home/coyote/Network/coyote/server/build/CMakeFiles/rebuild_cache.dir
+/home/coyote/Network/coyote/server/build/CMakeFiles/edit_cache.dir
+/home/coyote/Network/coyote/server/build/CMakeFiles/server.dir
