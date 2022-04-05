@@ -259,9 +259,10 @@ void Http_Conn::http_header_get_html(char *header)
     snprintf(header, HEADER_LENGTH - 1, "HTTP/1.1 200 OK\r\nContent-Type: text/html;charset=utf-8\r\nContent-length: 1024\r\nServer: Coyote's Server 0.1\r\n\r\n");
 }
 
-void Http_Conn::handler()
+void Http_Conn::handler(void* var)
 {
-    read_handle(); 
-    close(m_connfd);
+    Http_Conn *obj = (Http_Conn*)var;
+    obj->read_handle(); 
+    close(obj->m_connfd);
 }
 

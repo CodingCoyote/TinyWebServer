@@ -63,9 +63,10 @@ public:
     };
 
 public:
+    static void handler(void*);
+public:
     void init();
     void init(int sockfd);
-    void handler();
     HTTP_CODE read_handle();
     HTTP_CODE request_handle();
     LINE_STATUS parse_line();

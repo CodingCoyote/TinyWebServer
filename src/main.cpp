@@ -15,15 +15,15 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    Server *obj = new Server(argv[1]);
+    Server obj(argv[1]);
     
     struct sockaddr_in client_addr;
     socklen_t client_length = sizeof(client_addr);
    
     while (1) {
-        int connfd = obj->acceptClient(client_addr, client_length);
-        
-        std::thread(&Server::handler, obj, connfd).detach();
+        int connfd = obj.acceptClient(client_addr, client_length);
+        obj.handler(connfd);
+//        std::thread(&Server::handler, obj, connfd).detach();
     }
     
     return 0;

@@ -19,6 +19,7 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 #include "http/httpconn.h"
+#include "threadPool/threadPool.hpp"
 
 class Server {
 public:
@@ -31,10 +32,11 @@ public:
     Server &
         operator=(const Server &) =delete;
 
-public:
-    Http_Conn hc;
-
 private:
+    static const int MAX_FDS = 65535;
+private:
+    Http_Conn *m_hc;
+    ThreadPool<Http_Conn> *m_pool;
     struct sockaddr_in server_addr;
     int listenfd;
 };
@@ -57,17 +59,19 @@ Server::Server(const char *config)
     bzero(&server_addr.sin_zero, 8);
     
     if ((listenfd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
-        throw;
+        throw std::exception();
     }
     
     if (bind(listenfd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) == -1) {
-        throw;
+        throw std::exception();
     }
     
     if (listen(listenfd, 10) == -1) {
-        throw;
+        throw std::exception();
     }
-
+    
+    m_hc = new Http_Conn[MAX_FDS];
+    m_pool = new ThreadPool<Http_Conn>();
 }
 
 int Server::acceptClient(struct sockaddr_in & client_addr, socklen_t & client_size) {
@@ -83,16 +87,18 @@ int Server::acceptClient(struct sockaddr_in & client_addr, socklen_t & client_si
     std::cout << "connect with: " << inet_ntoa(client_addr.sin_addr);
     std::cout << ": " << ntohs(client_addr.sin_port) << std::endl;
 
-    hc.init(connfd);
+    m_hc[0].init(connfd);
     return connfd;
 }
 
 Server::~Server()
 {
+    delete[] m_hc;
+    delete m_pool;
     close(listenfd);
 }
 
 void Server::handler(int connfd) {
-    hc.handler();
+    m_pool->addTask(&Http_Conn::handler, &m_hc[0]);
 }
 #endif
