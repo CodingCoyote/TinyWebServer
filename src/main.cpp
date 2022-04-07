@@ -17,12 +17,8 @@ int main(int argc, char **argv)
 
     Server obj(argv[1]);
     
-    struct sockaddr_in client_addr;
-    socklen_t client_length = sizeof(client_addr);
-   
     while (1) {
-        int connfd = obj.acceptClient(client_addr, client_length);
-        obj.handler(connfd);
+        obj.handler();
 //        std::thread(&Server::handler, obj, connfd).detach();
     }
     
