@@ -177,6 +177,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/sqlConn/sqlConn.o: src/sqlConn/sqlConn.cpp.o
+.PHONY : src/sqlConn/sqlConn.o
+
+# target to build an object file
+src/sqlConn/sqlConn.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/sqlConn/sqlConn.cpp.o
+.PHONY : src/sqlConn/sqlConn.cpp.o
+
+src/sqlConn/sqlConn.i: src/sqlConn/sqlConn.cpp.i
+.PHONY : src/sqlConn/sqlConn.i
+
+# target to preprocess a source file
+src/sqlConn/sqlConn.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/sqlConn/sqlConn.cpp.i
+.PHONY : src/sqlConn/sqlConn.cpp.i
+
+src/sqlConn/sqlConn.s: src/sqlConn/sqlConn.cpp.s
+.PHONY : src/sqlConn/sqlConn.s
+
+# target to generate assembly for a file
+src/sqlConn/sqlConn.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/sqlConn/sqlConn.cpp.s
+.PHONY : src/sqlConn/sqlConn.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +216,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/sqlConn/sqlConn.o"
+	@echo "... src/sqlConn/sqlConn.i"
+	@echo "... src/sqlConn/sqlConn.s"
 .PHONY : help
 
 

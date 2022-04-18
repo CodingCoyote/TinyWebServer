@@ -1,1 +1,1 @@
-/usr/bin/c++   -pthread -rdynamic CMakeFiles/server.dir/src/main.cpp.o CMakeFiles/server.dir/src/http/httpconn.cpp.o -o server 
+/usr/bin/c++  -pthread -lmysqlclient -ldl -lm -lssl -lcrypto -rdynamic CMakeFiles/server.dir/src/main.cpp.o CMakeFiles/server.dir/src/http/httpconn.cpp.o CMakeFiles/server.dir/src/sqlConn/sqlConn.cpp.o -o server  -lmysqlclient 

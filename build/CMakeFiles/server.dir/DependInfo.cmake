@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/coyote/Network/coyote/server/src/http/httpconn.cpp" "CMakeFiles/server.dir/src/http/httpconn.cpp.o" "gcc" "CMakeFiles/server.dir/src/http/httpconn.cpp.o.d"
   "/home/coyote/Network/coyote/server/src/main.cpp" "CMakeFiles/server.dir/src/main.cpp.o" "gcc" "CMakeFiles/server.dir/src/main.cpp.o.d"
+  "/home/coyote/Network/coyote/server/src/sqlConn/sqlConn.cpp" "CMakeFiles/server.dir/src/sqlConn/sqlConn.cpp.o" "gcc" "CMakeFiles/server.dir/src/sqlConn/sqlConn.cpp.o.d"
   )
 
 # Targets to which this target links.

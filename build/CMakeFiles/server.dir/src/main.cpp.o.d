@@ -110,6 +110,7 @@ CMakeFiles/server.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
  /usr/include/x86_64-linux-gnu/bits/setjmp.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
  /usr/include/x86_64-linux-gnu/c++/10/bits/atomic_word.h \
  /usr/include/c++/10/bits/locale_classes.h /usr/include/c++/10/string \
  /usr/include/c++/10/bits/allocator.h \
@@ -170,7 +171,13 @@ CMakeFiles/server.dir/src/main.cpp.o: \
  /usr/include/c++/10/fstream /usr/include/c++/10/bits/codecvt.h \
  /usr/include/x86_64-linux-gnu/c++/10/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/10/bits/c++io.h \
- /usr/include/c++/10/bits/fstream.tcc \
+ /usr/include/c++/10/bits/fstream.tcc /usr/include/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/linux/falloc.h /usr/include/x86_64-linux-gnu/bits/stat.h \
+ /usr/include/x86_64-linux-gnu/bits/struct_stat.h \
+ /usr/include/x86_64-linux-gnu/sys/epoll.h \
+ /usr/include/x86_64-linux-gnu/bits/epoll.h \
  /usr/local/include/nlohmann/json.hpp /usr/include/c++/10/algorithm \
  /usr/include/c++/10/utility /usr/include/c++/10/bits/stl_relops.h \
  /usr/include/c++/10/bits/stl_algo.h \
@@ -208,6 +215,7 @@ CMakeFiles/server.dir/src/main.cpp.o: \
  /usr/include/c++/10/bits/erase_if.h /usr/include/c++/10/unordered_map \
  /usr/include/c++/10/bits/hashtable.h \
  /usr/include/c++/10/bits/hashtable_policy.h \
+ /usr/include/c++/10/bits/enable_special_members.h \
  /usr/include/c++/10/bits/unordered_map.h /usr/include/c++/10/valarray \
  /usr/include/c++/10/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
@@ -238,6 +246,10 @@ CMakeFiles/server.dir/src/main.cpp.o: \
  /usr/include/c++/10/bits/quoted_string.h /usr/include/c++/10/sstream \
  /usr/include/c++/10/bits/sstream.tcc \
  /home/coyote/Network/coyote/server/src/http/httpconn.h \
- /usr/include/c++/10/stdlib.h /usr/include/c++/10/thread \
+ /usr/include/c++/10/stdlib.h \
+ /home/coyote/Network/coyote/server/src/threadPool/threadPool.hpp \
+ /usr/include/c++/10/queue /usr/include/c++/10/deque \
+ /usr/include/c++/10/bits/stl_deque.h /usr/include/c++/10/bits/deque.tcc \
+ /usr/include/c++/10/bits/stl_queue.h /usr/include/c++/10/thread \
  /usr/include/c++/10/chrono /usr/include/c++/10/ratio \
  /usr/include/c++/10/bits/parse_numbers.h

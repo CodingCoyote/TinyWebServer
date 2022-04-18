@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DJSON_DIAGNOSTICS=0 -DJSON_USE_IMPLICIT_CONVERSIONS=1
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/usr/include/mariadb -I/usr/include/mariadb/mysql
 
-CXX_FLAGS =   -pthread
+CXX_FLAGS =  -pthread -lmysqlclient -ldl -lm -lssl -lcrypto
 
