@@ -6,6 +6,8 @@
  ************************************************************************/
 #include "httpconn.h"
 
+int Http_Conn::m_epollfd = -1;
+
 void Http_Conn::init(int sockfd) {
     m_connfd = sockfd;
     init();
@@ -68,13 +70,17 @@ Http_Conn::HTTP_CODE Http_Conn::read_handle() {
                 {
                     ret = parse_headers(text);
                     if (ret == BAD_REQUEST) return ret;
-                    else if (ret == GET_REQUEST) return request_handle();
+                    else if (ret == GET_REQUEST) {
+                        return ret;
+                    }
                     break;
                 }
             case CHECK_STATE_CONTENT:
                 {
                     ret = parse_content(text);
-                    if (ret == GET_REQUEST) return request_handle();
+                    if (ret == GET_REQUEST) {
+                        return ret;
+                    }
                     ls = LINE_OPEN;
                     break;
                 }
@@ -229,11 +235,14 @@ Http_Conn::HTTP_CODE Http_Conn::parse_content(char *text)
 
 ssize_t Http_Conn::send_file(const char *filename)
 {
-    std::ifstream fin(filename);
-    if (!fin.is_open()) {
+    int filefd = open(filename, O_RDONLY);
+    if (filefd <= 0) {
         std::cout << "cannot open file: " << filename << std::endl;
         return -1;
     }
+
+    struct stat stat_buf;
+    fstat(filefd, &stat_buf);
 
     char header[HEADER_LENGTH];
     http_header_get_html(header);
@@ -242,27 +251,35 @@ ssize_t Http_Conn::send_file(const char *filename)
         return -1;
     }
 
-    std::string tmp;
-    while (getline(fin, tmp)) {
-        if (send(m_connfd, tmp.c_str(), tmp.size(), 0) == -1) {
-            std::cout << "send_file error\n";
-            return -1;
-        }
-    }
-
-    fin.close();
+    sendfile(m_connfd, filefd, NULL, stat_buf.st_size);
+    modfd(m_epollfd, m_connfd, EPOLLIN);
     return 0;
 }
 
-void Http_Conn::http_header_get_html(char *header)
-{
+void Http_Conn::http_header_get_html(char *header) {
     snprintf(header, HEADER_LENGTH - 1, "HTTP/1.1 200 OK\r\nContent-Type: text/html;charset=utf-8\r\nContent-length: 1024\r\nServer: Coyote's Server 0.1\r\n\r\n");
 }
 
-void Http_Conn::handler(void* var)
-{
-    Http_Conn *obj = (Http_Conn*)var;
-    obj->read_handle(); 
-    close(obj->m_connfd);
+void Http_Conn::modfd(int epollfd, int connfd, int ev) {
+    epoll_event event;
+    event.data.fd = connfd;
+    event.events = ev | EPOLLONESHOT | EPOLLRDHUP;
+    epoll_ctl(epollfd, EPOLL_CTL_MOD, connfd, &event);
 }
 
+void Http_Conn::read_handler(void* var) {
+    Http_Conn *obj = (Http_Conn*)var;
+    HTTP_CODE ret = obj->read_handle();
+    if (ret == NO_REQUEST) {
+        obj->modfd(m_epollfd, obj->m_connfd, EPOLLIN);
+        return;
+    }
+    obj->modfd(m_epollfd, obj->m_connfd, EPOLLOUT);
+}
+
+void Http_Conn::write_handler(void* var) {
+    Http_Conn *obj = (Http_Conn*)var;
+    obj->request_handle();
+    epoll_ctl(m_epollfd, EPOLL_CTL_DEL, obj->m_connfd, 0);
+    close(obj->m_connfd);
+}

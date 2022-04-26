@@ -36,7 +36,7 @@ public:
         operator=(const Server &) =delete;
 public:
     int setNonBlocking(int fd);
-    void addfdToEpoll(int fd, bool enable_et);
+    void addfdToEpoll(int fd, bool oneshot, bool enable_et);
     void eventLoop();
 private:
     static const int MAX_FDS = 65536;
@@ -84,7 +84,8 @@ Server::Server(const char *config)
     if ((m_epollfd = epoll_create(5)) == -1) {
         throw std::exception();
     }
-    addfdToEpoll(listenfd, false);
+    addfdToEpoll(listenfd, false, false);
+    Http_Conn::m_epollfd = m_epollfd;
 }
 
 int Server::acceptClient() {
@@ -124,12 +125,15 @@ int Server::setNonBlocking(int fd) {
     return old_option;
 }
 
-void Server::addfdToEpoll(int fd, bool enable_et) {
+void Server::addfdToEpoll(int fd, bool oneshot, bool enable_et) {
     epoll_event event;
     event.data.fd = fd;
-    event.events = EPOLLIN;
+    event.events = EPOLLIN | EPOLLRDHUP;
     if (enable_et) {
         event.events |= EPOLLET | EPOLLONESHOT;
+    }
+    if (oneshot) {
+        event.events |= EPOLLONESHOT;
     }
     epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &event);
     setNonBlocking(fd);
@@ -147,10 +151,14 @@ void Server::eventLoop() {
             int sockfd = m_events[i].data.fd;
             if (sockfd == listenfd) {
                 int connfd = acceptClient();
-                addfdToEpoll(connfd, false);
+                addfdToEpoll(connfd, true, false);
+            } else if (m_events[i].events & EPOLLRDHUP) {
+                epoll_ctl(m_epollfd, EPOLL_CTL_DEL, sockfd, 0);
+                close(sockfd);
             } else if (m_events[i].events & EPOLLIN) {
-                m_pool->addTask(&Http_Conn::handler, &m_hc[sockfd]);
-                sleep(10);
+                m_pool->addTask(&Http_Conn::read_handler, &m_hc[sockfd]);
+            } else if (m_events[i].events & EPOLLOUT) {
+                m_pool->addTask(&Http_Conn::write_handler, &m_hc[sockfd]);
             } else {
                 std::cout << "event can't handle\n";
             }

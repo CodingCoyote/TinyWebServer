@@ -17,6 +17,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/sendfile.h>
+#include <fcntl.h>
+#include <sys/epoll.h>
 
 class Http_Conn {
 public:
@@ -63,7 +68,9 @@ public:
     };
 
 public:
-    static void handler(void*);
+    static void read_handler(void*);
+    static void write_handler(void*);
+    static int m_epollfd;
 public:
     void init();
     void init(int sockfd);
@@ -76,6 +83,7 @@ public:
     ssize_t send_file(const char *filename);
     void http_header_get_html(char *header);
     bool recv_msg();
+    void modfd(int, int, int);
 private:
     const char *httpConfig = "../config/httpConfig.json";
     int m_connfd;           //客户端连接fd
